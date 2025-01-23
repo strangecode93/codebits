@@ -38,7 +38,7 @@ const SnippetDetailPage = async ({params}:{params:Promise<{id:string}>}) => {
       
       <h1 className='text-3xl font-bold'>{snippet?.title}</h1>
       
-      <div className='text-xl mt-5 border rounded-lg p-5'>
+      <div className='text-xl mt-5 border rounded-lg p-5 overflow-auto'>
         <pre>
             <code>
                 {snippet?.code}
