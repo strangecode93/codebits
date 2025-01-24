@@ -3,6 +3,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
+import {revalidatePath} from "next/cache"
 
 export const saveSnippets = async (id:number, code:string) => {
     await prisma.snippets.update({
@@ -13,7 +14,7 @@ export const saveSnippets = async (id:number, code:string) => {
             code: code
         }
     })
-
+    revalidatePath("/snippet/" + id)
     redirect("/snippet/" + id)
 }
 
@@ -23,6 +24,7 @@ export const deleteSnippet = async (id:number) => {
             id: id
         }
     })
+    revalidatePath("/")
     redirect("/")
 }
 
@@ -38,17 +40,18 @@ export async function createSnippet(prevState: {message: string}, formData: Form
         if(typeof code !== "string" || code.length < 4){ 
             return {message: "Code must be at least 4 characters"}
         }
-        const snippet = await prisma.snippets.create({
+        await prisma.snippets.create({
             data: {
                 title: title,
                 code: code
             }
         })
-        console.log(snippet)
-        throw new Error("oops! something went wrong")
+        // console.log(snippet)
+        revalidatePath("/")
+        // throw new Error("oops! something went wrong")
     } catch (error : any) {
         return {message: error.message}
     }
-
+    
     redirect("/")
 }
